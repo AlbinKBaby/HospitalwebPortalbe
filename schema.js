@@ -4,15 +4,21 @@ const mongoose = require('mongoose')
 // User Schema
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  password: String, // hashed
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  passwordHash: {   // ✅ better name
+    type: String,
+    required: true
+  },
   role: {
     type: String,
     enum: ['admin', 'supervisor'],
     default: 'admin'
   }
 });
-
 // Medical Test Schema
 const medicalTestSchema = new mongoose.Schema({
     name: {
