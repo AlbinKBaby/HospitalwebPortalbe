@@ -4,7 +4,7 @@ const userController =  require('../Controller/userController')
 const medicalTestController = require('../Controller/medicalTestController')
 
 // User routes
-router.post('/user/add', userController.addUser)
+router.post('/login', userController.login)
 
 // Medical Test routes
 router.post('/medical-tests', medicalTestController.addMedicalTest)

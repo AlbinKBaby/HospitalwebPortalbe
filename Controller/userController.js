@@ -1,15 +1,36 @@
-const { users } = require('../schema')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const { users } = require('../schema');
 
-exports.addUser = async (req, res) => {
-    console.log("Inside add user controller")
-    console.log(req.body)
+exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-    try {
-        const newUser = new users(req.body)
-        await newUser.save()
-        res.status(201).json({ message: "User added successfully", user: newUser })
-    } catch (error) {
-        console.error("Error adding user:", error)
-        res.status(500).json({ message: "Failed to add user", error: error.message })
+    const user = await users.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
-}
+
+     const isMatch = await bcrypt.compare(password, user.passwordHash);
+    console.log("Match:", isMatch); // 👈 debug
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      "SECRET_KEY",
+      { expiresIn: "1d" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      role: user.role
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

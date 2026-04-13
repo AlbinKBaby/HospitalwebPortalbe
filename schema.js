@@ -2,23 +2,16 @@
 const mongoose = require('mongoose')
 
 // User Schema
+
 const userSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-    },
-    email: {
-        type: String
-    },
-    mobileNumber: {
-        type: Number
-    },
-    location: {
-        type: String
-    },
-    course: {
-        type: String
-    }
-})
+  username: String,
+  password: String, // hashed
+  role: {
+    type: String,
+    enum: ['admin', 'supervisor'],
+    default: 'admin'
+  }
+});
 
 // Medical Test Schema
 const medicalTestSchema = new mongoose.Schema({
